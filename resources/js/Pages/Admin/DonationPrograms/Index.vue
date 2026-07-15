@@ -205,6 +205,9 @@ const deleteProgram = (id) => {
               class="w-full rounded border border-brand-slate px-3 py-2 text-sm bg-brand-stone/40 font-mono text-brand-navy/70 focus:outline-none"
             />
             <span v-if="form.errors.slug" class="text-xs text-red-600 block">{{ form.errors.slug }}</span>
+            <p class="text-[11px] text-brand-navy/50 leading-relaxed mt-1">
+              Fungsi: Digunakan sebagai alamat URL unik halaman detail donasi ini di website (contoh: /donasi/<strong>slug-url-ini</strong>). Dibuat otomatis saat Anda mengisi Nama Program Donasi.
+            </p>
           </div>
 
           <!-- Description -->
