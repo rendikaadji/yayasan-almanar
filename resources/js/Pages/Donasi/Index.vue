@@ -42,6 +42,13 @@ const formatCurrency = (val) => {
     minimumFractionDigits: 0,
   }).format(val);
 };
+
+const formatDate = (val) => {
+  if (!val) return '-';
+  const d = new Date(val);
+  if (isNaN(d)) return val;
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+};
 </script>
 
 <template>
@@ -140,7 +147,7 @@ const formatCurrency = (val) => {
               </thead>
               <tbody class="divide-y divide-brand-slate">
                 <tr v-for="report in displayReports" :key="report.id" class="hover:bg-brand-stone/20 transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap text-brand-navy/60 font-mono text-xs">{{ report.date }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-brand-navy/60 text-xs">{{ formatDate(report.date) }}</td>
                   <td class="px-6 py-4 font-semibold text-brand-teal whitespace-nowrap">{{ report.donation_program?.title || 'Program' }}</td>
                   <td class="px-6 py-4 text-brand-navy/80">{{ report.description }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-red-700 font-bold font-mono text-xs">- {{ formatCurrency(report.amount) }}</td>

@@ -35,6 +35,13 @@ const formatCurrency = (val) => {
   }).format(val);
 };
 
+const formatDate = (val) => {
+  if (!val) return '-';
+  const d = new Date(val);
+  if (isNaN(d)) return val;
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+
 const openCreateModal = () => {
   isEditing.value = false;
   editingId.value = null;
@@ -113,8 +120,8 @@ const deleteReport = (id) => {
             </thead>
             <tbody class="divide-y divide-brand-slate">
               <tr v-for="report in donationReports" :key="report.id" class="hover:bg-brand-stone/20 transition-colors">
-                <td class="px-6 py-4 whitespace-nowrap text-brand-navy/80 font-mono text-xs">
-                  {{ report.date }}
+                <td class="px-6 py-4 whitespace-nowrap text-brand-navy/80 text-xs">
+                  {{ formatDate(report.date) }}
                 </td>
                 <td class="px-6 py-4">
                   <div class="font-semibold text-brand-teal line-clamp-1">
