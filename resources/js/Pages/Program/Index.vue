@@ -108,6 +108,9 @@ const filteredPrograms = computed(() => {
               <div>Waktu: <span class="text-brand-navy font-medium">{{ program.schedule }}</span></div>
               <div>Lokasi: <span class="text-brand-navy font-medium">{{ program.location }}</span></div>
             </div>
+            <Link :href="route('program.show', program.slug || 'slug')" class="text-xs font-bold text-brand-sage hover:text-brand-teal transition-colors whitespace-nowrap self-end">
+              Detail &rarr;
+            </Link>
           </template>
         </Card>
       </div>

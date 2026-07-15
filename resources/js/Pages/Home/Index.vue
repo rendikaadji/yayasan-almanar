@@ -168,7 +168,7 @@ const formatCurrency = (val) => {
             <p class="line-clamp-3 text-sm text-brand-navy/80">{{ program.description }}</p>
             <template #footer>
               <span class="text-xs text-brand-moss font-utility font-medium">{{ program.schedule }}</span>
-              <Link :href="route('program.index')" class="text-xs font-bold text-brand-sage hover:text-brand-teal transition-colors">Detail &rarr;</Link>
+              <Link :href="route('program.show', program.slug)" class="text-xs font-bold text-brand-sage hover:text-brand-teal transition-colors">Detail &rarr;</Link>
             </template>
           </Card>
         </template>
@@ -280,7 +280,7 @@ const formatCurrency = (val) => {
             <p class="line-clamp-3 text-sm text-brand-navy/80">{{ post.content }}</p>
             <template #footer>
               <span class="text-xs text-brand-moss/80 font-utility">Ditulis: {{ post.author?.name || 'Admin' }}</span>
-              <Link :href="route('berita.index')" class="text-xs font-bold text-brand-sage hover:text-brand-teal">Baca &rarr;</Link>
+              <Link :href="route('berita.show', post.slug)" class="text-xs font-bold text-brand-sage hover:text-brand-teal">Baca &rarr;</Link>
             </template>
           </Card>
         </template>
