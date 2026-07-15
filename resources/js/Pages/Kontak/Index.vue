@@ -57,7 +57,7 @@ const submitForm = () => {
               </svg>
               <div>
                 <span class="block font-semibold text-brand-teal">Alamat Lengkap</span>
-                <span>Jl. Raya Al Manar No. 12, Kota Tangerang, Banten</span>
+                <span>Jl. Graha III No.001/08, RT.II/RW.2, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan, DKI Jakarta 12270</span>
               </div>
             </div>
 
@@ -86,12 +86,12 @@ const submitForm = () => {
           <div class="w-full h-64 rounded-lg overflow-hidden border border-brand-slate shadow-sm bg-brand-slate">
             <!-- Leaflet or static Maps embed simulation -->
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15866.275727926116!2d106.63462985!3d-6.1883726!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f8c6e265c71b%3A0xc3457a17726cbffb!2sTangerang%20City!5e0!3m2!1sid!2sid!4v1689234000000!5m2!1sid!2sid" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.4!2d106.7508!3d-6.2397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f0ec8119d8f9%3A0x4bc1b17b22c7a501!2sMasjid%20Jami%20Al%20Manar!5e0!3m2!1sid!2sid!4v1689234000000!5m2!1sid!2sid" 
               class="w-full h-full border-0" 
               allowfullscreen="" 
               loading="lazy" 
               referrerpolicy="no-referrer-when-downgrade"
-              title="Google Maps Al Manar"
+              title="Lokasi Masjid Jami Al Manar - Jl. Graha III, Petukangan Selatan, Jakarta Selatan"
             ></iframe>
           </div>
         </div>
