@@ -109,22 +109,66 @@ Route::post('/kontak', function (\Illuminate\Http\Request $request) {
 |--------------------------------------------------------------------------
 */
 
-Route::redirect('/admin', '/admin/dashboard');
+Route::get('/admin', function (\Illuminate\Http\Request $request) {
+    $user = $request->user();
+    if ($user) {
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->isBendaharaUmum()) {
+            return redirect()->route('admin.finance.rekap.index');
+        } elseif ($user->isBendaharaBidang()) {
+            return redirect()->route('admin.finance.periods.index');
+        }
+    }
+    return redirect()->route('login');
+})->middleware(['auth']);
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('posts', PostController::class)->except(['create', 'show', 'edit']);
-    Route::resource('programs', ProgramController::class)->except(['create', 'show', 'edit']);
-    Route::resource('galleries', GalleryController::class)->except(['create', 'show', 'edit']);
-    Route::resource('testimonials', TestimonialController::class)->except(['create', 'show', 'edit']);
-    Route::resource('donation-programs', DonationProgramController::class)->except(['create', 'show', 'edit']);
-    Route::resource('donation-reports', DonationReportController::class)->except(['create', 'show', 'edit']);
-    Route::resource('organization-structures', OrganizationStructureController::class)->except(['create', 'show', 'edit']);
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // 1. CMS Routes (Protected by admin middleware)
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('posts', PostController::class)->except(['create', 'show', 'edit']);
+        Route::resource('programs', ProgramController::class)->except(['create', 'show', 'edit']);
+        Route::resource('galleries', GalleryController::class)->except(['create', 'show', 'edit']);
+        Route::resource('testimonials', TestimonialController::class)->except(['create', 'show', 'edit']);
+        Route::resource('donation-programs', DonationProgramController::class)->except(['create', 'show', 'edit']);
+        Route::resource('donation-reports', DonationReportController::class)->except(['create', 'show', 'edit']);
+        Route::resource('organization-structures', OrganizationStructureController::class)->except(['create', 'show', 'edit']);
+        
+        // Contact Messages
+        Route::get('contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::patch('contact-messages/{contact_message}/read', [ContactMessageController::class, 'markAsRead'])->name('contact-messages.read');
+        Route::delete('contact-messages/{contact_message}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+    });
     
-    // Contact Messages
-    Route::get('contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
-    Route::patch('contact-messages/{contact_message}/read', [ContactMessageController::class, 'markAsRead'])->name('contact-messages.read');
-    Route::delete('contact-messages/{contact_message}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+    // 2. Finance System Routes (Protected by finance middleware)
+    Route::middleware(['finance'])->prefix('finance')->name('finance.')->group(function () {
+        // SubKategori CRUD (Admin only)
+        Route::resource('sub-kategori', \App\Http\Controllers\Admin\SubKategoriController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->middleware('admin');
+
+        // Periode Laporan
+        Route::get('periods', [\App\Http\Controllers\Admin\PeriodeLaporanController::class, 'index'])->name('periods.index');
+        Route::post('periods', [\App\Http\Controllers\Admin\PeriodeLaporanController::class, 'store'])->name('periods.store');
+        Route::get('periods/{periode}', [\App\Http\Controllers\Admin\PeriodeLaporanController::class, 'show'])->name('periods.show');
+        Route::post('periods/{periode}/submit', [\App\Http\Controllers\Admin\PeriodeLaporanController::class, 'submit'])->name('periods.submit');
+
+        // Transaksi
+        Route::post('transactions', [\App\Http\Controllers\Admin\TransaksiController::class, 'store'])->name('transactions.store');
+        Route::patch('transactions/{transaksi}', [\App\Http\Controllers\Admin\TransaksiController::class, 'update'])->name('transactions.update');
+        Route::delete('transactions/{transaksi}', [\App\Http\Controllers\Admin\TransaksiController::class, 'destroy'])->name('transactions.destroy');
+
+        // Rekap Konsolidasi (General Treasurer/Admin access)
+        Route::get('rekap', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'index'])->name('rekap.index');
+        Route::get('rekap/periode/{periode}', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'showPeriode'])->name('rekap.periode');
+        Route::post('rekap/periode/{periode}/verifikasi', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'verifikasi'])->name('rekap.verifikasi');
+        Route::post('rekap/periode/{periode}/tolak', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'tolak'])->name('rekap.tolak');
+        Route::post('rekap/generate', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'generate'])->name('rekap.generate');
+        Route::get('rekap/show', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'showKonsolidasi'])->name('rekap.show');
+        Route::get('rekap/export/excel', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'exportExcel'])->name('rekap.export.excel');
+        Route::get('rekap/export/pdf', [\App\Http\Controllers\Admin\RekapKonsolidasiController::class, 'exportPdf'])->name('rekap.export.pdf');
+    });
 });
 
 /*
@@ -133,8 +177,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 |--------------------------------------------------------------------------
 */
 
-Route::get('/dashboard', function () {
-    return redirect()->route('admin.dashboard');
+Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
+    $user = $request->user();
+    if ($user->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->isBendaharaUmum()) {
+        return redirect()->route('admin.finance.rekap.index');
+    } elseif ($user->isBendaharaBidang()) {
+        return redirect()->route('admin.finance.periods.index');
+    }
+    abort(403, 'Akses ditolak.');
 })->middleware(['auth'])->name('dashboard');
 
 /*

@@ -164,5 +164,7 @@ class DatabaseSeeder extends Seeder
             'photo' => '/images/pengurus_avatar.png',
             'order' => 3,
         ]);
+
+        $this->call(FinanceSeeder::class);
     }
 }
